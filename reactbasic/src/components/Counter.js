@@ -1,13 +1,17 @@
 import React from 'react';
+import {clickIncrement , clickDecrement} from '../actions/counter.action';
+import { connect } from 'react-redux';
+
+
 
 class Counter extends React.Component{
     //Initial Mount phase
     constructor(props){
         super(props);
         console.log('constructor !!');
-        this.state={
-            count:0,
-        }
+        // this.state={
+        //     count:0,
+        // }
     }
 
     //Component Lifecycle methods
@@ -36,41 +40,56 @@ class Counter extends React.Component{
         return true;
     }
     
-    handleClickCount =() => {
-    const {count} = this.state;
-    this.setState ({
-        count:count +1,
-    });
+    
+
+  clickIncrement=()=>{
+      const { _clickIncrement } = this.props;
+      _clickIncrement();
   }
 
-    handleClickDecrement =() => {
-    const {count} = this.state;
-    if(count===0) return;
-    this.setState ({
-    count:count -1,
-    });
-    }
-    handleInput = (e)=>{
-    console.log('value radio=', e.target.value);
+  clickDecrement=()=>{
+   const { _clickDecrement } =this.props;
+   _clickDecrement();
+}
 
-    this.setState({
-        name:e.target.value,
-    });
-  }
+  
+//     handleInput = (e)=>{
+//     console.log('value radio=', e.target.value);
+
+//     // this.setState({
+//     //     name:e.target.value,
+//     // });
+//   }
     render(){
-        const{text,text1} = this.props;
-        const{name,count} = this.state;
-        console.log('Count is ' ,this.state.count);
+        const{text,text1, countValue} = this.props;
+        // const{name,count} = this.state;
+        // console.log('Count is ' ,this.state.count);
         return(
             <div>
-             <div>Count : {count}</div>
-              <button name="Increment" onClick={this.handleClickCount}>{text}</button>
-              <button name="Decrement" onClick={this.handleClickDecrement}>{text1}</button>
+             <div>Count : {countValue}</div>
+              <button name="Increment" onClick={this.clickIncrement}>{text}</button>
+              <button name="Decrement" onClick={this.clickDecrement}>{text1}</button>
               <br/>
-              <input type="text" onChange={this.handleInput}></input>
-              <div>Name:{name}</div>
+              {/* <input type="text" onChange={this.handleInput}></input>
+              <div>Name:{name}</div> */}
             </div>
         )
     }
+  
+} 
+const mapStoreToProps =(store)=>({
+    countValue:store.counter.count,  
+})
 
-} export default Counter;
+const mapDispatchToProps=(dispatch)=>({
+ _clickIncrement : ()=>{
+     dispatch(clickIncrement())
+ },
+
+ _clickDecrement : ()=>{
+     dispatch(clickDecrement())
+ },
+});
+
+export default connect(mapStoreToProps,mapDispatchToProps)(Counter) ;
+
